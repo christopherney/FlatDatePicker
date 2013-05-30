@@ -5,7 +5,11 @@ The FlatDatePicker is a iOS control **Date Picker** with **Flat-UI** appearance.
 
 This control is compatible with **ARC** and **iOS 5+**.
 
-For user FlatDatePicker follow the instructions :
+Screenshot :
+
+![ScreenShot](https://raw.github.com/christopherney/FlatDatePicker/master/Screenshot.png)
+
+How installed and used FlatDatePicker ? Follow the instructions :
 
  - Import the controller by **drag-and-drop** the folder **FlatDatePicker** into your **Xcode project**.
  - Import the **header file** of  **FlatDatePicker** into the View Controller.
