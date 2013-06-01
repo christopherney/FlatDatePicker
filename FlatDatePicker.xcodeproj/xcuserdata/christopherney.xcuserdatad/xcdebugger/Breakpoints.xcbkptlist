@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
-         timestampString = "391642439.490028"
+         timestampString = "391779825.145226"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "310"
-         endingLineNumber = "310"
+         startingLineNumber = "386"
+         endingLineNumber = "386"
          landmarkName = "-getYears"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
-         timestampString = "391642439.490028"
+         timestampString = "391779825.145226"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "360"
-         endingLineNumber = "360"
+         startingLineNumber = "434"
+         endingLineNumber = "434"
          landmarkName = "-getDaysInMonth:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
-         timestampString = "391642648.257548"
+         timestampString = "391780255.206771"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "494"
-         endingLineNumber = "494"
+         startingLineNumber = "591"
+         endingLineNumber = "591"
          landmarkName = "-convertToDate"
          landmarkType = "5">
       </FileBreakpoint>
@@ -47,12 +47,64 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "FlatDatePicker/ViewController.m"
-         timestampString = "391642439.490028"
+         timestampString = "391777115.127362"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "64"
          endingLineNumber = "64"
          landmarkName = "-flatDatePicker:dateDidChange:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
+         timestampString = "391779821.208349"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "491"
+         endingLineNumber = "491"
+         landmarkName = "-updateSelectedDateAtIndex:forScrollView:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
+         timestampString = "391779938.202946"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "496"
+         endingLineNumber = "496"
+         landmarkName = "-updateSelectedDateAtIndex:forScrollView:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
+         timestampString = "391779933.433365"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "498"
+         endingLineNumber = "498"
+         landmarkName = "-updateSelectedDateAtIndex:forScrollView:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "FlatDatePicker/FlatDatePicker/FlatDatePicker.m"
+         timestampString = "391780028.891269"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "502"
+         endingLineNumber = "502"
+         landmarkName = "-updateSelectedDateAtIndex:forScrollView:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
