@@ -26,12 +26,6 @@
     self.flatDatePicker.title = @"Select your birthday";
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (IBAction)actionOpen:(id)sender {
     
     [self.flatDatePicker show];
