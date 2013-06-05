@@ -9,7 +9,7 @@
 #import "FlatDatePicker.h"
 
 // Constants times :
-#define kFlatDatePickerAnimationDuration 0.5
+#define kFlatDatePickerAnimationDuration 0.4
 
 // Constants colors :
 #define kFlatDatePickerBackgroundColor [UIColor colorWithRed:58.0/255.0 green:58.0/255.0 blue:58.0/255.0 alpha:1.0]
@@ -25,9 +25,9 @@
 #define kFlatDatePickerFontColorLabelSelected [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0]
 
 // Constants sizes :
-#define kFlatDatePickerHeight 220
-#define kFlatDatePickerHeaderHeight 45
-#define kFlatDatePickerButtonHeaderWidth 45
+#define kFlatDatePickerHeight 260
+#define kFlatDatePickerHeaderHeight 44
+#define kFlatDatePickerButtonHeaderWidth 44
 #define kFlatDatePickerHeaderBottomMargin 1
 #define kFlatDatePickerScrollViewDaysWidth 90
 #define kFlatDatePickerScrollViewMonthWidth 140
@@ -75,7 +75,11 @@
 - (void)updateSelectedDateAtIndex:(int)index forScrollView:(UIScrollView*)scrollView;
 
 - (NSDate*)convertToDateDay:(int)day month:(int)month year:(int)year;
+- (void)updateNumberOfDays;
 
+- (void)singleTapGestureDaysCaptured:(UITapGestureRecognizer *)gesture;
+- (void)singleTapGestureMonthsCaptured:(UITapGestureRecognizer *)gesture;
+- (void)singleTapGestureYearssCaptured:(UITapGestureRecognizer *)gesture;
 @end
 
 @implementation FlatDatePicker
@@ -93,6 +97,7 @@
 -(void)setupControl {
     
     // Set parent View :
+    self.hidden = YES;
     [_parentView addSubview:self];
     
     // Default parameters :
@@ -105,11 +110,6 @@
     _months = [self getMonths];
     _days = [self getDaysInMonth:[NSDate date]];
 
-    // Defaut Date selected :
-    _selectedDay  = 1;
-    _selectedMonth = 1;
-    _selectedYear = kStartYear;
-
     // Background :
     self.backgroundColor = kFlatDatePickerBackgroundColor;
     
@@ -120,6 +120,9 @@
     [self buildSelectorDays];
     [self buildSelectorMonths];
     [self buildSelectorYears];
+
+    // Defaut Date selected :
+    [self setDate:[NSDate date] animated:NO];
 }
 
 #pragma mark - Build View
@@ -171,6 +174,11 @@
 
     // Update ScrollView Data
     [self buildSelectorLabelsDays];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureDaysCaptured:)];
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.numberOfTouchesRequired = 1;
+    [_scollViewDays addGestureRecognizer:singleTap];
 }
 
 - (void)buildSelectorLabelsDays {
@@ -336,6 +344,15 @@
 
 -(void)show {
     
+    if (self.hidden == YES) {
+        self.hidden = NO;
+    }
+    
+    if (_isInitialized == NO) {
+        self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height, self.frame.size.width, self.frame.size.height);
+        _isInitialized = YES;
+    }
+
     int indexDays = [self getIndexForScrollViewPosition:_scollViewDays];
     [self highlightLabelInArray:_labelsDays atIndex:indexDays];
     
@@ -441,6 +458,34 @@
 
 #pragma mark - UIScrollView Delegate
 
+- (void)singleTapGestureDaysCaptured:(UITapGestureRecognizer *)gesture
+{
+    /*
+    CGPoint touchPoint = [gesture locationInView:_scollViewDays];
+
+    NSLog(@"%f", touchPoint.y);
+    
+    if (touchPoint.y < (_lineDaysTop.frame.origin.y - _scollViewDays.frame.origin.y)) {
+        
+        _selectedDay -= 1;
+        [self updateNumberOfDays];
+        
+    } else if (touchPoint.y > (_lineDaysBottom.frame.origin.y - _scollViewDays.frame.origin.y)) {
+        
+        _selectedDay += 1;
+        [self updateNumberOfDays];
+    }
+     */
+}
+
+- (void)singleTapGestureMonthsCaptured:(UITapGestureRecognizer *)gesture {
+    
+}
+
+- (void)singleTapGestureYearssCaptured:(UITapGestureRecognizer *)gesture {
+    
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 
     int index = [self getIndexForScrollViewPosition:scrollView];
@@ -491,29 +536,38 @@
         _selectedMonth = index + 1;
         
         // Updates days :
-        NSDate *date = [self convertToDateDay:1 month:_selectedMonth year:_selectedYear];
-        
-        if (date != nil) {
-            
-            NSMutableArray *newDays = [self getDaysInMonth:date];
-            
-            if (newDays.count != _days.count) {
-                
-                _days = newDays;
-                
-                [self buildSelectorLabelsDays];
-                
-                if (_selectedDay > _days.count) {
-                    _selectedDay = _days.count;
-                }
-                
-                [self highlightLabelInArray:_labelsDays atIndex:_selectedDay - 1];
-            }
-        }
-
+        [self updateNumberOfDays];
 
     } else if (scrollView.tag == TAG_YEARS) {
+        
         _selectedYear = kStartYear + index;
+        
+        // Updates days :
+        [self updateNumberOfDays];
+    }
+}
+
+- (void)updateNumberOfDays {
+    
+    // Updates days :
+    NSDate *date = [self convertToDateDay:1 month:_selectedMonth year:_selectedYear];
+    
+    if (date != nil) {
+        
+        NSMutableArray *newDays = [self getDaysInMonth:date];
+        
+        if (newDays.count != _days.count) {
+            
+            _days = newDays;
+            
+            [self buildSelectorLabelsDays];
+            
+            if (_selectedDay > _days.count) {
+                _selectedDay = _days.count;
+            }
+            
+            [self highlightLabelInArray:_labelsDays atIndex:_selectedDay - 1];
+        }
     }
 }
 

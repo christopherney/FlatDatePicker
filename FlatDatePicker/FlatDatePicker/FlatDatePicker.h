@@ -63,6 +63,9 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     int _selectedDay;
     int _selectedMonth;
     int _selectedYear;
+    
+    // First init flag :
+    BOOL _isInitialized;
 }
 
 @property (nonatomic, strong) NSObject<FlatDatePickerDelegate> *delegate;
