@@ -24,6 +24,7 @@
     self.flatDatePicker = [[FlatDatePicker alloc] initWithParentView:self.view];
     self.flatDatePicker.delegate = self;
     self.flatDatePicker.title = @"Select your birthday";
+    //self.flatDatePicker.datePickerMode = FlatDatePickerModeTime;
 }
 
 - (IBAction)actionOpen:(id)sender {
@@ -40,10 +41,14 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setLocale:[NSLocale currentLocale]];
-    [dateFormatter setDateFormat:@"dd-MM-yyyy"];
-    NSDate *date = [dateFormatter dateFromString:@"07-12-1985"];
+    [dateFormatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+    NSDate *date = [dateFormatter dateFromString:@"07-12-1985 15:36:45"];
     
-    [self.flatDatePicker setDate:date animated:NO];
+    if (self.flatDatePicker.isOpen) {
+         [self.flatDatePicker setDate:date animated:YES];
+    } else {
+         [self.flatDatePicker setDate:date animated:NO];
+    }
 }
 
 #pragma mark - FlatDatePicker Delegate
@@ -52,7 +57,15 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setLocale:[NSLocale currentLocale]];
-    [dateFormatter setDateFormat:@"dd MMMM yyyy"];
+    
+    if (datePicker.datePickerMode == FlatDatePickerModeDate) {
+        [dateFormatter setDateFormat:@"dd MMMM yyyy"];
+    } else if (datePicker.datePickerMode == FlatDatePickerModeTime) {
+        [dateFormatter setDateFormat:@"HH:mm:ss"];
+    } else {
+        [dateFormatter setDateFormat:@"dd MMMM yyyy HH:mm:ss"];
+    }
+    
     NSString *value = [dateFormatter stringFromDate:date];
     
     self.labelDateSelected.text = value;
@@ -68,7 +81,15 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setLocale:[NSLocale currentLocale]];
-    [dateFormatter setDateFormat:@"dd MMMM yyyy"];
+    
+    if (datePicker.datePickerMode == FlatDatePickerModeDate) {
+        [dateFormatter setDateFormat:@"dd MMMM yyyy"];
+    } else if (datePicker.datePickerMode == FlatDatePickerModeTime) {
+        [dateFormatter setDateFormat:@"HH:mm:ss"];
+    } else {
+        [dateFormatter setDateFormat:@"dd MMMM yyyy HH:mm:ss"];
+    }
+    
     NSString *value = [dateFormatter stringFromDate:date];
     
     self.labelDateSelected.text = value;
