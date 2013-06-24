@@ -106,6 +106,10 @@
 - (void)singleTapGestureMonthsCaptured:(UITapGestureRecognizer *)gesture;
 - (void)singleTapGestureYearsCaptured:(UITapGestureRecognizer *)gesture;
 
+- (void)singleTapGestureHoursCaptured:(UITapGestureRecognizer *)gesture;
+- (void)singleTapGestureMinutesCaptured:(UITapGestureRecognizer *)gesture;
+- (void)singleTapGestureSecondsCaptured:(UITapGestureRecognizer *)gesture;
+
 - (void)animationShowDidFinish;
 - (void)animationDismissDidFinish;
 
@@ -466,6 +470,11 @@
     
     // Update ScrollView Data
     [self buildSelectorLabelsHours];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureHoursCaptured:)];
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.numberOfTouchesRequired = 1;
+    [_scollViewHours addGestureRecognizer:singleTap];
 }
 
 - (void)buildSelectorLabelsHours {
@@ -537,6 +546,11 @@
     
     // Update ScrollView Data
     [self buildSelectorLabelsMinutes];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureMinutesCaptured:)];
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.numberOfTouchesRequired = 1;
+    [_scollViewMinutes addGestureRecognizer:singleTap];
 }
 
 - (void)buildSelectorLabelsMinutes {
@@ -608,6 +622,11 @@
     
     // Update ScrollView Data
     [self buildSelectorLabelsSeconds];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureSecondsCaptured:)];
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.numberOfTouchesRequired = 1;
+    [_scollViewSeconds addGestureRecognizer:singleTap];
 }
 
 - (void)buildSelectorLabelsSeconds {
@@ -946,7 +965,6 @@
             [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:YES];
         }
     }
- 
 }
 
 - (void)singleTapGestureYearsCaptured:(UITapGestureRecognizer *)gesture {
@@ -968,6 +986,70 @@
         if (_selectedYear < (_years.count + (minYear - 1))) {
             _selectedYear += 1;
             [self setScrollView:_scollViewYears atIndex:(_selectedYear - minYear) animated:YES];
+        }
+    }
+}
+
+
+- (void)singleTapGestureHoursCaptured:(UITapGestureRecognizer *)gesture {
+ 
+    CGPoint touchPoint = [gesture locationInView:self];
+    CGFloat touchY = touchPoint.y;
+    
+    if (touchY < (_lineHoursTop.frame.origin.y)) {
+        
+        if (_selectedHour > 0) {
+            _selectedHour -= 1;
+            [self setScrollView:_scollViewHours atIndex:_selectedHour animated:YES];
+        }
+        
+    } else if (touchY > (_lineHoursBottom.frame.origin.y)) {
+        
+        if (_selectedHour < _hours.count - 1) {
+            _selectedHour += 1;
+            [self setScrollView:_scollViewHours atIndex:_selectedHour animated:YES];
+        }
+    }
+}
+
+- (void)singleTapGestureMinutesCaptured:(UITapGestureRecognizer *)gesture {
+    
+    CGPoint touchPoint = [gesture locationInView:self];
+    CGFloat touchY = touchPoint.y;
+    
+    if (touchY < (_lineMinutesTop.frame.origin.y)) {
+        
+        if (_selectedMinute > 0) {
+            _selectedMinute -= 1;
+            [self setScrollView:_scollViewMinutes atIndex:_selectedMinute animated:YES];
+        }
+        
+    } else if (touchY > (_lineMinutesBottom.frame.origin.y)) {
+        
+        if (_selectedMinute < _minutes.count - 1) {
+            _selectedMinute += 1;
+            [self setScrollView:_scollViewMinutes atIndex:_selectedMinute animated:YES];
+        }
+    }
+}
+
+- (void)singleTapGestureSecondsCaptured:(UITapGestureRecognizer *)gesture {
+    
+    CGPoint touchPoint = [gesture locationInView:self];
+    CGFloat touchY = touchPoint.y;
+    
+    if (touchY < (_lineSecondsTop.frame.origin.y)) {
+        
+        if (_selectedSecond > 0) {
+            _selectedSecond -= 1;
+            [self setScrollView:_scollViewSeconds atIndex:_selectedSecond animated:YES];
+        }
+        
+    } else if (touchY > (_lineSecondsBottom.frame.origin.y)) {
+        
+        if (_selectedSecond < _seconds.count - 1) {
+            _selectedSecond += 1;
+            [self setScrollView:_scollViewSeconds atIndex:_selectedSecond animated:YES];
         }
     }
 }
@@ -1094,6 +1176,10 @@
         
         if (animated) {
             [UIView commitAnimations];
+        }
+        
+        if (self.delegate != nil && [self.delegate respondsToSelector:@selector(flatDatePicker:dateDidChange:)]) {
+            [self.delegate flatDatePicker:self dateDidChange:[self getDate]];
         }
     }
 }
