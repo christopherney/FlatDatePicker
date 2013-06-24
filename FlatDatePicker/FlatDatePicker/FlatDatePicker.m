@@ -113,6 +113,15 @@
 
 @implementation FlatDatePicker
 
+-(id)initWithFrame:(CGRect)frame {
+    
+    if ([super initWithFrame:frame]) {
+        _datePickerMode = FlatDatePickerModeDate;
+        [self setupControl];
+    }
+    return self;
+}
+
 -(id)initWithParentView:(UIView*)parentView {
     
     _parentView = parentView;
@@ -670,50 +679,53 @@
 #pragma mark - Show and Dismiss
 
 -(void)show {
-    
-    if (self.hidden == YES) {
-        self.hidden = NO;
-    }
-    
-    if (_isInitialized == NO) {
-        self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height, self.frame.size.width, self.frame.size.height);
-        _isInitialized = YES;
-    }
-    
-    if (self.datePickerMode == FlatDatePickerModeDate || self.datePickerMode == FlatDatePickerModeDateAndTime) {
-        
-        int indexDays = [self getIndexForScrollViewPosition:_scollViewDays];
-        [self highlightLabelInArray:_labelsDays atIndex:indexDays];
-        
-        int indexMonths = [self getIndexForScrollViewPosition:_scollViewMonths];
-        [self highlightLabelInArray:_labelsMonths atIndex:indexMonths];
-        
-        int indexYears = [self getIndexForScrollViewPosition:_scollViewYears];
-        [self highlightLabelInArray:_labelsYears atIndex:indexYears];
-    }
 
-    if (self.datePickerMode == FlatDatePickerModeTime || self.datePickerMode == FlatDatePickerModeDateAndTime) {
+    if (_parentView != nil) {
         
-        int indexHours = [self getIndexForScrollViewPosition:_scollViewHours];
-        [self highlightLabelInArray:_labelsHours atIndex:indexHours];
+        if (self.hidden == YES) {
+            self.hidden = NO;
+        }
         
-        int indexMinutes = [self getIndexForScrollViewPosition:_scollViewMinutes];
-        [self highlightLabelInArray:_labelsMinutes atIndex:indexMinutes];
+        if (_isInitialized == NO) {
+            self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height, self.frame.size.width, self.frame.size.height);
+            _isInitialized = YES;
+        }
         
-        int indexSeconds = [self getIndexForScrollViewPosition:_scollViewSeconds];
-        [self highlightLabelInArray:_labelsSeconds atIndex:indexSeconds];
+        if (self.datePickerMode == FlatDatePickerModeDate || self.datePickerMode == FlatDatePickerModeDateAndTime) {
+            
+            int indexDays = [self getIndexForScrollViewPosition:_scollViewDays];
+            [self highlightLabelInArray:_labelsDays atIndex:indexDays];
+            
+            int indexMonths = [self getIndexForScrollViewPosition:_scollViewMonths];
+            [self highlightLabelInArray:_labelsMonths atIndex:indexMonths];
+            
+            int indexYears = [self getIndexForScrollViewPosition:_scollViewYears];
+            [self highlightLabelInArray:_labelsYears atIndex:indexYears];
+        }
+        
+        if (self.datePickerMode == FlatDatePickerModeTime || self.datePickerMode == FlatDatePickerModeDateAndTime) {
+            
+            int indexHours = [self getIndexForScrollViewPosition:_scollViewHours];
+            [self highlightLabelInArray:_labelsHours atIndex:indexHours];
+            
+            int indexMinutes = [self getIndexForScrollViewPosition:_scollViewMinutes];
+            [self highlightLabelInArray:_labelsMinutes atIndex:indexMinutes];
+            
+            int indexSeconds = [self getIndexForScrollViewPosition:_scollViewSeconds];
+            [self highlightLabelInArray:_labelsSeconds atIndex:indexSeconds];
+        }
+        
+        [UIView beginAnimations:@"FlatDatePickerShow" context:nil];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDuration:kFlatDatePickerAnimationDuration];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(animationShowDidFinish)];
+        
+        self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height - kFlatDatePickerHeight, self.frame.size.width, self.frame.size.height);
+        
+        [UIView commitAnimations];
     }
-    
-    [UIView beginAnimations:@"FlatDatePickerShow" context:nil];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDuration:kFlatDatePickerAnimationDuration];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationShowDidFinish)];
-    
-    self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height - kFlatDatePickerHeight, self.frame.size.width, self.frame.size.height);
-    
-    [UIView commitAnimations];
 }
 
 - (void)animationShowDidFinish {
@@ -722,16 +734,19 @@
 
 -(void)dismiss {
     
-    [UIView beginAnimations:@"FlatDatePickerShow" context:nil];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDuration:kFlatDatePickerAnimationDuration];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDismissDidFinish)];
-    
-    self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height, self.frame.size.width, self.frame.size.height);
-    
-    [UIView commitAnimations];
+    if (_parentView != nil) {
+        
+        [UIView beginAnimations:@"FlatDatePickerShow" context:nil];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDuration:kFlatDatePickerAnimationDuration];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(animationDismissDidFinish)];
+        
+        self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height, self.frame.size.width, self.frame.size.height);
+        
+        [UIView commitAnimations];
+    }
 }
 
 - (void)animationDismissDidFinish {
@@ -897,12 +912,18 @@
     CGFloat touchY = touchPoint.y;
     
     if (touchY < (_lineDaysTop.frame.origin.y)) {
-        _selectedDay -= 1;
-        [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:YES];
+        
+        if (_selectedDay > 1) {
+            _selectedDay -= 1;
+            [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:YES];
+        }
 
     } else if (touchY > (_lineDaysBottom.frame.origin.y)) {
-        _selectedDay += 1;
-        [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:YES];
+        
+        if (_selectedDay < _days.count) {
+            _selectedDay += 1;
+            [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:YES];
+        }
     }
 }
 
@@ -910,19 +931,45 @@
     
     CGPoint touchPoint = [gesture locationInView:self];
     CGFloat touchY = touchPoint.y;
-    
+
     if (touchY < (_lineMonthsTop.frame.origin.y)) {
-        _selectedMonth -= 1;
-        [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:YES];
+        
+        if (_selectedMonth > 1) {
+            _selectedMonth -= 1;
+            [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:YES];
+        }
         
     } else if (touchY > (_lineMonthsBottom.frame.origin.y)) {
-        _selectedMonth += 1;
-        [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:YES];
+        
+        if (_selectedMonth < _months.count) {
+            _selectedMonth += 1;
+            [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:YES];
+        }
     }
+ 
 }
 
 - (void)singleTapGestureYearsCaptured:(UITapGestureRecognizer *)gesture {
     
+    CGPoint touchPoint = [gesture locationInView:self];
+    CGFloat touchY = touchPoint.y;
+    
+    int minYear = kStartYear;
+    
+    if (touchY < (_lineYearsTop.frame.origin.y)) {
+        
+        if (_selectedYear > minYear) {
+            _selectedYear -= 1;
+            [self setScrollView:_scollViewYears atIndex:(_selectedYear - minYear) animated:YES];
+        }
+        
+    } else if (touchY > (_lineYearsBottom.frame.origin.y)) {
+        
+        if (_selectedYear < (_years.count + (minYear - 1))) {
+            _selectedYear += 1;
+            [self setScrollView:_scollViewYears atIndex:(_selectedYear - minYear) animated:YES];
+        }
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
