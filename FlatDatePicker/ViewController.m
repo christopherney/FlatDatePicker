@@ -24,7 +24,9 @@
     self.flatDatePicker = [[FlatDatePicker alloc] initWithParentView:self.view];
     self.flatDatePicker.delegate = self;
     self.flatDatePicker.title = @"Select your birthday";
-    self.flatDatePicker.datePickerMode = FlatDatePickerModeTime;
+    //self.flatDatePicker.datePickerMode = FlatDatePickerModeTime;
+    //self.flatDatePicker.datePickerMode = FlatDatePickerModeDate;
+    self.flatDatePicker.datePickerMode = FlatDatePickerModeDateAndTime;
 }
 
 - (IBAction)actionOpen:(id)sender {

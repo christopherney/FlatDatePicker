@@ -38,6 +38,8 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     UIScrollView *_scollViewMonths;
     UIScrollView *_scollViewYears;
     
+    UIScrollView *_scollViewDates;
+    
     UIScrollView *_scollViewHours;
     UIScrollView *_scollViewMinutes;
     UIScrollView *_scollViewSeconds;
@@ -49,6 +51,9 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     UIView *_lineMonthsBottom;
     UIView *_lineYearsTop;
     UIView *_lineYearsBottom;
+    
+    UIView *_lineDatesTop;
+    UIView *_lineDatesBottom;
     
     UIView *_lineHoursTop;
     UIView *_lineHoursBottom;
@@ -65,6 +70,9 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     NSMutableArray *_months;
     NSMutableArray *_years;
     
+    // Dates :
+    NSMutableArray *_dates;
+    
     // Hours, Minutes, Seconds :
     NSMutableArray *_hours;
     NSMutableArray *_minutes;
@@ -75,6 +83,8 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     NSMutableArray *_labelsMonths;
     NSMutableArray *_labelsYears;
     
+    NSMutableArray *_labelsDates;
+    
     NSMutableArray *_labelsHours;
     NSMutableArray *_labelsMinutes;
     NSMutableArray *_labelsSeconds;
@@ -84,6 +94,9 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     int _selectedMonth;
     int _selectedYear;
     
+    int _selectedDate;
+    
+    // Time selected :
     int _selectedHour;
     int _selectedMinute;
     int _selectedSecond;
@@ -104,6 +117,8 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
 @property(nonatomic,retain) NSDate        *maximumDate;           // default is nil
 
 @property(nonatomic,readonly) BOOL        isOpen;                 // read only property, indicate in datepicker is open.
+
+#pragma mark - Initializers
 
 - (id)initWithParentView:(UIView*)parentView;
 
