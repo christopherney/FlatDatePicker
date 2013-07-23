@@ -106,7 +106,7 @@
 - (void)highlightLabelInArray:(NSMutableArray*)labels atIndex:(int)index;
 - (void)updateSelectedDateAtIndex:(int)index forScrollView:(UIScrollView*)scrollView;
 
-- (NSDate*)convertToDateDay:(int)day month:(int)month year:(int)year hours:(int)hours minutes:(int)minutes seconds:(int)seconds;
+- (NSDate*)convertToDateDay:(int)day month:(int)month year:(int)year hours:(int)hours minutes:(int)minutes seconds:(int)seconds date:(NSDate*)date;
 - (void)updateNumberOfDays;
 
 - (void)singleTapGestureDaysCaptured:(UITapGestureRecognizer *)gesture;
@@ -166,15 +166,6 @@
     self.calendar = [NSCalendar currentCalendar];
     self.locale = [NSLocale currentLocale];
     self.timeZone = nil;
-    
-    // Generate collections days, months, years, hours, minutes and seconds :
-    _years = [self getYears];
-    _months = [self getMonths];
-    _days = [self getDaysInMonth:[NSDate date]];
-    _hours = [self getHours];
-    _minutes = [self getMinutes];
-    _seconds = [self getSeconds];
-    _dates = [self getDates];
 
     // Background :
     self.backgroundColor = kFlatDatePickerBackgroundColor;
@@ -184,6 +175,11 @@
 
     // Date Selectors :
     if (self.datePickerMode == FlatDatePickerModeDate) {
+        
+        _years = [self getYears];
+        _months = [self getMonths];
+        _days = [self getDaysInMonth:[NSDate date]];
+        
         [self buildSelectorDaysOffsetX:0.0 andWidth:kFlatDatePickerScrollViewDaysWidth];
         [self buildSelectorMonthsOffsetX:(_scollViewDays.frame.size.width + kFlatDatePickerScrollViewLeftMargin) andWidth:kFlatDatePickerScrollViewMonthWidth];
         [self buildSelectorYearsOffsetX:(_scollViewMonths.frame.origin.x + _scollViewMonths.frame.size.width + kFlatDatePickerScrollViewLeftMargin) andWidth:(self.frame.size.width - (_scollViewMonths.frame.origin.x + _scollViewMonths.frame.size.width + kFlatDatePickerScrollViewLeftMargin))];
@@ -191,6 +187,11 @@
     
     // Time Selectors :
     if (self.datePickerMode == FlatDatePickerModeTime) {
+        
+        _hours = [self getHours];
+        _minutes = [self getMinutes];
+        _seconds = [self getSeconds];
+
         [self buildSelectorHoursOffsetX:0.0 andWidth:((self.frame.size.width / 3.0) - kFlatDatePickerScrollViewLeftMargin)];
         [self buildSelectorMinutesOffsetX:(self.frame.size.width / 3.0) andWidth:((self.frame.size.width / 3.0) - kFlatDatePickerScrollViewLeftMargin)];
         [self buildSelectorSecondsOffsetX:((self.frame.size.width / 3.0) * 2.0) andWidth:(self.frame.size.width / 3.0)];
@@ -198,6 +199,11 @@
     
     // Date & Time Selectors :
     if (self.datePickerMode == FlatDatePickerModeDateAndTime) {
+        
+        _dates = [self getDates];
+        _hours = [self getHours];
+        _minutes = [self getMinutes];
+
         [self buildSelectorDatesOffsetX:0.0 andWidth:kFlatDatePickerScrollViewDateWidth];
         [self buildSelectorHoursOffsetX:(kFlatDatePickerScrollViewDateWidth + kFlatDatePickerScrollViewLeftMargin) andWidth:(((self.frame.size.width - kFlatDatePickerScrollViewDateWidth) / 2.0) - kFlatDatePickerScrollViewLeftMargin)];
         [self buildSelectorMinutesOffsetX:(kFlatDatePickerScrollViewDateWidth + kFlatDatePickerScrollViewLeftMargin + ((self.frame.size.width - kFlatDatePickerScrollViewDateWidth) / 2.0)) andWidth:(((self.frame.size.width - kFlatDatePickerScrollViewDateWidth) / 2.0) - kFlatDatePickerScrollViewLeftMargin)];
@@ -991,7 +997,7 @@
         
         [dates addObject:date];
          
-        timestampMin += 1 * 24 * 60 * 60;
+        timestampMin += (24 * 60 * 60); // + 1 day
     }
     
     return dates;
@@ -1283,13 +1289,15 @@
         _selectedMinute = index; // 0 to 59
     } else if (scrollView.tag == TAG_SECONDS) {
         _selectedSecond = index; // 0 to 59
+    } else if (scrollView.tag == TAG_DATES) {
+        _selectedDate = index;
     }
 }
 
 - (void)updateNumberOfDays {
     
     // Updates days :
-    NSDate *date = [self convertToDateDay:1 month:_selectedMonth year:_selectedYear hours:_selectedHour minutes:_selectedMinute seconds:_selectedSecond];
+    NSDate *date = [self convertToDateDay:1 month:_selectedMonth year:_selectedYear hours:_selectedHour minutes:_selectedMinute seconds:_selectedSecond date:nil];
     
     if (date != nil) {
         
@@ -1346,7 +1354,7 @@
     
     if (labels != nil) {
         
-        if ((index - 1) >= 0) {
+        if ((index - 1) >= 0 && (index - 1) < labels.count) {
             UILabel *label = (UILabel*)[labels objectAtIndex:(index - 1)];
             label.textColor = kFlatDatePickerFontColorLabel;
             label.font = kFlatDatePickerFontLabel;
@@ -1358,7 +1366,7 @@
             label.font = kFlatDatePickerFontLabelSelected;
         }
         
-        if ((index + 1) < labels.count) {
+        if ((index + 1) >= 0 && (index + 1) < labels.count) {
             UILabel *label = (UILabel*)[labels objectAtIndex:(index + 1)];
             label.textColor = kFlatDatePickerFontColorLabel;
             label.font = kFlatDatePickerFontLabel;
@@ -1381,17 +1389,39 @@
         _selectedMinute = [components minute];
         _selectedSecond = [components second];
         
-        if (self.datePickerMode == FlatDatePickerModeDate || self.datePickerMode == FlatDatePickerModeDateAndTime) {
+        if (self.datePickerMode == FlatDatePickerModeDate) {
             [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:animated];
             [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:animated];
             [self setScrollView:_scollViewYears atIndex:(_selectedYear - kStartYear) animated:animated]; 
         }
         
-        if (self.datePickerMode == FlatDatePickerModeTime || self.datePickerMode == FlatDatePickerModeDateAndTime) {
+        if (self.datePickerMode == FlatDatePickerModeTime) {
             [self setScrollView:_scollViewHours atIndex:_selectedHour animated:animated];
             [self setScrollView:_scollViewMinutes atIndex:_selectedMinute animated:animated];
             [self setScrollView:_scollViewSeconds atIndex:_selectedSecond animated:animated];
         }
+        
+        if (self.datePickerMode == FlatDatePickerModeDateAndTime) {
+            
+            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+            [dateComponents setCalendar:self.calendar];
+            [dateComponents setTimeZone:self.timeZone];
+            [dateComponents setDay:1];
+            [dateComponents setMonth:1];
+            [dateComponents setHour:0];
+            [dateComponents setMinute:0];
+            [dateComponents setSecond:0];
+            [dateComponents setYear:kStartYear];
+            
+            NSDate *yearMin = [dateComponents date];
+            
+            _selectedDate = ([date timeIntervalSince1970] - [yearMin timeIntervalSince1970]) / (24 * 60 * 60);
+            
+            [self setScrollView:_scollViewDates atIndex:_selectedDate animated:animated];
+            [self setScrollView:_scollViewHours atIndex:_selectedHour animated:animated];
+            [self setScrollView:_scollViewMinutes atIndex:_selectedMinute animated:animated];
+        }
+        
         
         if (self.delegate != nil && [self.delegate respondsToSelector:@selector(flatDatePicker:dateDidChange:)]) {
             [self.delegate flatDatePicker:self dateDidChange:[self getDate]];
@@ -1399,118 +1429,57 @@
     }
 }
 
-- (NSDate*)convertToDateDay:(int)day month:(int)month year:(int)year hours:(int)hours minutes:(int)minutes seconds:(int)seconds; {
+- (NSDate*)convertToDateDay:(int)day month:(int)month year:(int)year hours:(int)hours minutes:(int)minutes seconds:(int)seconds date:(NSDate*)date; {
     
-    NSMutableString *dateString = [[NSMutableString alloc] init];
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    if (self.timeZone != nil) [dateFormatter setTimeZone:self.timeZone];
-    [dateFormatter setLocale:self.locale];
+    NSDateComponents *dateComponents = nil;
     
     // Date Mode :
     if (self.datePickerMode == FlatDatePickerModeDate) {
-
-        if (day < 10) {
-            [dateString appendFormat:@"0%d-", day];
-        } else {
-            [dateString appendFormat:@"%d-", day];
-        }
         
-        if (month < 10) {
-            [dateString appendFormat:@"0%d-", month];
-        } else {
-            [dateString appendFormat:@"%d-", month];
-        }
+        dateComponents = [[NSDateComponents alloc] init];
+        [dateComponents setTimeZone:self.timeZone];
+        [dateComponents setCalendar:self.calendar];
         
-        [dateString appendFormat:@"%d", year];
-
-        [dateFormatter setDateFormat:@"dd-MM-yyyy"];
+        [dateComponents setYear:year];
+        [dateComponents setMonth:month];
+        [dateComponents setDay:day];
+        [dateComponents setHour:0];
+        [dateComponents setMinute:0];
+        [dateComponents setSecond:0];
     }
     
     // Time Mode :
     if (self.datePickerMode == FlatDatePickerModeTime) {
-        
-        NSDateComponents* components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
-        
-        int nowDay = [components day];
-        int nowMonth = [components month];
-        int nowYear = [components year];
-  
-        if (nowDay < 10) {
-            [dateString appendFormat:@"0%d-", nowDay];
-        } else {
-            [dateString appendFormat:@"%d-", nowDay];
-        }
-        
-        if (nowMonth < 10) {
-            [dateString appendFormat:@"0%d-", nowMonth];
-        } else {
-            [dateString appendFormat:@"%d-", nowMonth];
-        }
-        
-        [dateString appendFormat:@"%d", nowYear];
-        
-        if (hours < 10) {
-            [dateString appendFormat:@" 0%d:", hours];
-        } else {
-            [dateString appendFormat:@" %d:", hours];
-        }
-        
-        if (minutes < 10) {
-            [dateString appendFormat:@"0%d:", minutes];
-        } else {
-            [dateString appendFormat:@"%d:", minutes];
-        }
-        
-        if (seconds < 10) {
-            [dateString appendFormat:@"0%d", seconds];
-        } else {
-            [dateString appendFormat:@"%d", seconds];
-        }
-        
-        [dateFormatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+
+        dateComponents = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
+        [dateComponents setTimeZone:self.timeZone];
+        [dateComponents setHour:hours];
+        [dateComponents setMinute:minutes];
+        [dateComponents setSecond:seconds];
     }
     
     // Date and Time Mode :
     if (self.datePickerMode == FlatDatePickerModeDateAndTime) {
-        
-        if (day < 10) {
-            [dateString appendFormat:@"0%d-", day];
-        } else {
-            [dateString appendFormat:@"%d-", day];
-        }
-        
-        if (month < 10) {
-            [dateString appendFormat:@"0%d-", month];
-        } else {
-            [dateString appendFormat:@"%d-", month];
-        }
-        
-        [dateString appendFormat:@"%d", year];
-        
-        if (hours < 10) {
-            [dateString appendFormat:@" 0%d:", hours];
-        } else {
-            [dateString appendFormat:@" %d:", hours];
-        }
-        
-        if (minutes < 10) {
-            [dateString appendFormat:@"0%d:", minutes];
-        } else {
-            [dateString appendFormat:@"%d:", minutes];
-        }
-
-        [dateString appendString:@"00"];
-                
-        [dateFormatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+    
+        dateComponents = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:date];
+        [dateComponents setTimeZone:self.timeZone];
+        [dateComponents setHour:hours];
+        [dateComponents setMinute:minutes];
+        [dateComponents setSecond:0];
     }
-
-    return [dateFormatter dateFromString:dateString];
+    
+    return [dateComponents date];
 }
 
 - (NSDate*)getDate {
     
-    return [self convertToDateDay:_selectedDay month:_selectedMonth year:_selectedYear hours:_selectedHour minutes:_selectedMinute seconds:_selectedSecond];
+    NSDate *selectedDate = nil;
+    
+    if (_dates.count > 0 && _selectedDate >= 0 && _selectedDate < _dates.count) {
+        selectedDate = (NSDate*)[_dates objectAtIndex:_selectedDate];
+    }
+    
+    return [self convertToDateDay:_selectedDay month:_selectedMonth year:_selectedYear hours:_selectedHour minutes:_selectedMinute seconds:_selectedSecond date:selectedDate];
 }
 
 @end

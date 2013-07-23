@@ -24,9 +24,8 @@
     self.flatDatePicker = [[FlatDatePicker alloc] initWithParentView:self.view];
     self.flatDatePicker.delegate = self;
     self.flatDatePicker.title = @"Select your birthday";
-    //self.flatDatePicker.datePickerMode = FlatDatePickerModeTime;
+    self.flatDatePicker.datePickerMode = FlatDatePickerModeTime;
     //self.flatDatePicker.datePickerMode = FlatDatePickerModeDate;
-    self.flatDatePicker.datePickerMode = FlatDatePickerModeDateAndTime;
 }
 
 - (IBAction)actionOpen:(id)sender {
@@ -50,6 +49,24 @@
          [self.flatDatePicker setDate:date animated:YES];
     } else {
          [self.flatDatePicker setDate:date animated:NO];
+    }
+}
+
+- (IBAction)actionChangeMode:(id)sender {
+    
+    if (self.flatDatePicker != nil) {
+        
+        switch (self.segmentedControlMode.selectedSegmentIndex) {
+            case 1:
+                [self.flatDatePicker setDatePickerMode:FlatDatePickerModeDate];
+                break;
+            case 2:
+                [self.flatDatePicker setDatePickerMode:FlatDatePickerModeDateAndTime];
+                break;
+            default:
+                [self.flatDatePicker setDatePickerMode:FlatDatePickerModeTime];
+                break;
+        }
     }
 }
 
@@ -102,4 +119,8 @@
     [alertView show];
 }
 
+- (void)viewDidUnload {
+    [self setSegmentedControlMode:nil];
+    [super viewDidUnload];
+}
 @end
