@@ -118,6 +118,21 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
 
 @property(nonatomic,readonly) BOOL        isOpen;                 // read only property, indicate in datepicker is open.
 
+/**
+ * Colors customization.
+ */
+@property (strong) UIColor *backgroundColor;
+@property (strong) UIColor *backgroundColorTitle;
+@property (strong) UIColor *backgroundColorButtonValid;
+@property (strong) UIColor *backgroundColorButtonCancel;
+@property (strong) UIColor *backgroundColorScrollView;
+@property (strong) UIColor *backgroundColorLines;
+@property (strong) UIColor *backgroundColorSelected;
+
+@property (strong) UIColor *fontColorTitle;
+@property (strong) UIColor *fontColorLabel;
+@property (strong) UIColor *fontColorLabelSelected;
+
 #pragma mark - Initializers
 
 - (id)initWithParentView:(UIView*)parentView;
@@ -126,6 +141,11 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
 
 - (void)show;
 - (void)dismiss;
+
+/**
+ * Force to redraw the Picker. You should call this method after change the default colors.
+ */
+- (void)setupControl;
 
 #pragma mark - DatePicker Mode
 

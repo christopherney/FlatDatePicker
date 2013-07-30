@@ -12,17 +12,18 @@
 #define kFlatDatePickerAnimationDuration 0.4
 
 // Constants colors :
-#define kFlatDatePickerBackgroundColor [UIColor colorWithRed:58.0/255.0 green:58.0/255.0 blue:58.0/255.0 alpha:1.0]
-#define kFlatDatePickerBackgroundColorTitle [UIColor colorWithRed:34.0/255.0 green:34.0/255.0 blue:34.0/255.0 alpha:1.0]
-#define kFlatDatePickerBackgroundColorButtonValid [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0]
-#define kFlatDatePickerBackgroundColorButtonCancel [UIColor colorWithRed:58.0/255.0 green:58.0/255.0 blue:58.0/255.0 alpha:1.0]
-#define kFlatDatePickerBackgroundColorScrolView [UIColor colorWithRed:34.0/255.0 green:34.0/255.0 blue:34.0/255.0 alpha:1.0]
-#define kFlatDatePickerBackgroundColorLines [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0]
+#define kFlatDatePickerBackgroundColor self.backgroundColor
+#define kFlatDatePickerBackgroundColorTitle self.backgroundColorTitle
+#define kFlatDatePickerBackgroundColorButtonValid self.backgroundColorButtonValid
+#define kFlatDatePickerBackgroundColorButtonCancel self.backgroundColorButtonCancel
+#define kFlatDatePickerBackgroundColorScrolView self.backgroundColorScrollView
+#define kFlatDatePickerBackgroundColorLines self.backgroundColorLines
+#define kFlatDatePickerBackgroundColorSelected self.backgroundColorSelected;
 
 // Constants fonts colors :
-#define kFlatDatePickerFontColorTitle [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0]
-#define kFlatDatePickerFontColorLabel [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0]
-#define kFlatDatePickerFontColorLabelSelected [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0]
+#define kFlatDatePickerFontColorTitle self.fontColorTitle
+#define kFlatDatePickerFontColorLabel self.fontColorLabel
+#define kFlatDatePickerFontColorLabelSelected self.fontColorLabelSelected
 
 // Constants sizes :
 #define kFlatDatePickerHeight 260
@@ -34,7 +35,7 @@
 #define kFlatDatePickerScrollViewDateWidth 165
 #define kFlatDatePickerScrollViewLeftMargin 1
 #define kFlatDatePickerScrollViewItemHeight 45
-#define kFlatDatePickerLineWidth 2
+#define kFlatDatePickerLineWidth 1
 #define kFlatDatePickerLineMargin 15
 
 // Constants fonts
@@ -57,8 +58,6 @@
 #define TAG_DATES 7
 
 @interface FlatDatePicker ()
-
-- (void)setupControl;
 
 - (void)buildHeader;
 
@@ -132,6 +131,20 @@
     
     if ([super initWithFrame:frame]) {
         _datePickerMode = FlatDatePickerModeDate;
+        
+        // Default Colors.
+        self.backgroundColor = [UIColor colorWithRed:58.0/255.0 green:58.0/255.0 blue:58.0/255.0 alpha:1.0];
+        self.backgroundColorTitle = [UIColor colorWithRed:34.0/255.0 green:34.0/255.0 blue:34.0/255.0 alpha:1.0];
+        self.backgroundColorButtonValid = [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0];
+        self.backgroundColorButtonCancel = [UIColor colorWithRed:58.0/255.0 green:58.0/255.0 blue:58.0/255.0 alpha:1.0];
+        self.backgroundColorScrollView = [UIColor colorWithRed:34.0/255.0 green:34.0/255.0 blue:34.0/255.0 alpha:1.0];
+        self.backgroundColorLines = [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0];
+        self.backgroundColorSelected = [UIColor clearColor];
+        
+        self.fontColorTitle          = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+        self.fontColorLabel          = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+        self.fontColorLabelSelected  = [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0];
+        
         [self setupControl];
     }
     return self;
@@ -1357,18 +1370,21 @@
         if ((index - 1) >= 0 && (index - 1) < labels.count) {
             UILabel *label = (UILabel*)[labels objectAtIndex:(index - 1)];
             label.textColor = kFlatDatePickerFontColorLabel;
+            label.backgroundColor = [UIColor clearColor];
             label.font = kFlatDatePickerFontLabel;
         }
         
         if (index >= 0 && index < labels.count) {
             UILabel *label = (UILabel*)[labels objectAtIndex:index];
             label.textColor = kFlatDatePickerFontColorLabelSelected;
+            label.backgroundColor = kFlatDatePickerBackgroundColorSelected;
             label.font = kFlatDatePickerFontLabelSelected;
         }
         
         if ((index + 1) >= 0 && (index + 1) < labels.count) {
             UILabel *label = (UILabel*)[labels objectAtIndex:(index + 1)];
             label.textColor = kFlatDatePickerFontColorLabel;
+            label.backgroundColor = [UIColor clearColor];
             label.font = kFlatDatePickerFontLabel;
         }
     }
