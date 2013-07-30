@@ -39,9 +39,9 @@
 #define kFlatDatePickerLineMargin 15
 
 // Constants fonts
-#define kFlatDatePickerFontTitle [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0]
-#define kFlatDatePickerFontLabel [UIFont fontWithName:@"HelveticaNeue-Regular" size:16.0]
-#define kFlatDatePickerFontLabelSelected [UIFont fontWithName:@"HelveticaNeue-Bold" size:24.0]
+#define kFlatDatePickerFontTitle self.fontTitle;
+#define kFlatDatePickerFontLabel self.fontLabel;
+#define kFlatDatePickerFontLabelSelected self.fontLabelSelected;
 
 // Constants icons
 #define kFlatDatePickerIconCancel @"FlatDatePicker-Icon-Close.png"
@@ -144,6 +144,11 @@
         self.fontColorTitle          = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
         self.fontColorLabel          = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
         self.fontColorLabelSelected  = [UIColor colorWithRed:51.0/255.0 green:181.0/255.0 blue:229.0/255.0 alpha:1.0];
+
+        // Default fonts.
+        self.fontTitle = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0];
+        self.fontLabel = [UIFont fontWithName:@"HelveticaNeue-Regular" size:16.0];
+        self.fontLabelSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24.0];
         
         [self setupControl];
     }

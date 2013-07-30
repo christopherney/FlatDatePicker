@@ -133,6 +133,13 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
 @property (strong) UIColor *fontColorLabel;
 @property (strong) UIColor *fontColorLabelSelected;
 
+/**
+ * Font customization.
+ */
+@property (strong) UIFont *fontTitle;
+@property (strong) UIFont *fontLabel;
+@property (strong) UIFont *fontLabelSelected;
+
 #pragma mark - Initializers
 
 - (id)initWithParentView:(UIView*)parentView;
