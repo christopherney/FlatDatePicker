@@ -19,6 +19,7 @@
 
 typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     FlatDatePickerModeTime,           // Displays hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. 6 | 53 | PM)
+    FlatDatePickerModeMonthAndYear,   // Displays month and year depending on the locale setting (e.g. 15 | 2007)
     FlatDatePickerModeDate,           // Displays month, day, and year depending on the locale setting (e.g. November | 15 | 2007)
     FlatDatePickerModeDateAndTime    // Displays date, hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. Wed Nov 15 | 6 | 53 | PM)
 };

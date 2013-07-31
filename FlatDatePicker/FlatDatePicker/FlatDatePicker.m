@@ -191,8 +191,17 @@
     // Header DatePicker :
     [self buildHeader];
 
+    // Only Month and Year Date Selectors :
+    if ( self.datePickerMode == FlatDatePickerModeMonthAndYear ) {
+        _years = [self getYears];
+        _months = [self getMonths];
+        
+        [self buildSelectorMonthsOffsetX:0.0 andWidth:kFlatDatePickerScrollViewMonthWidth];
+        [self buildSelectorYearsOffsetX:(_scollViewMonths.frame.origin.x + _scollViewMonths.frame.size.width + kFlatDatePickerScrollViewLeftMargin) andWidth:(self.frame.size.width - (_scollViewMonths.frame.origin.x + _scollViewMonths.frame.size.width + kFlatDatePickerScrollViewLeftMargin))];
+    }
+    
     // Date Selectors :
-    if (self.datePickerMode == FlatDatePickerModeDate) {
+    if (self.datePickerMode == FlatDatePickerModeDate ) {
         
         _years = [self getYears];
         _months = [self getMonths];
@@ -369,7 +378,9 @@
 
 - (void)buildSelectorLabelsMonths {
     
-    CGFloat offsetContentScrollView = (_scollViewDays.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0;
+    CGFloat offsetContentScrollView = self.datePickerMode == FlatDatePickerModeMonthAndYear ?
+                                            (_scollViewMonths.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0 :
+                                            (_scollViewDays.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0 ;
     
     if (_labelsMonths != nil && _labelsMonths.count > 0) {
         for (UILabel *label in _labelsMonths) {
@@ -446,7 +457,9 @@
 
 - (void)buildSelectorLabelsYears {
     
-    CGFloat offsetContentScrollView = (_scollViewDays.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0;
+    CGFloat offsetContentScrollView = self.datePickerMode == FlatDatePickerModeMonthAndYear ?
+                                            (_scollViewMonths.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0 :
+                                            (_scollViewDays.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0 ;
 
     if (_labelsYears != nil && _labelsYears.count > 0) {
         for (UILabel *label in _labelsYears) {
@@ -837,10 +850,14 @@
             _isInitialized = YES;
         }
         
-        if (self.datePickerMode == FlatDatePickerModeDate || self.datePickerMode == FlatDatePickerModeDateAndTime) {
+        if (self.datePickerMode == FlatDatePickerModeDate ||
+            self.datePickerMode == FlatDatePickerModeDateAndTime ||
+            self.datePickerMode == FlatDatePickerModeMonthAndYear) {
             
-            int indexDays = [self getIndexForScrollViewPosition:_scollViewDays];
-            [self highlightLabelInArray:_labelsDays atIndex:indexDays];
+            if ( self.datePickerMode != FlatDatePickerModeMonthAndYear ) {
+                int indexDays = [self getIndexForScrollViewPosition:_scollViewDays];
+                [self highlightLabelInArray:_labelsDays atIndex:indexDays];
+            }
             
             int indexMonths = [self getIndexForScrollViewPosition:_scollViewMonths];
             [self highlightLabelInArray:_labelsMonths atIndex:indexMonths];
@@ -1410,8 +1427,10 @@
         _selectedMinute = [components minute];
         _selectedSecond = [components second];
         
-        if (self.datePickerMode == FlatDatePickerModeDate) {
-            [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:animated];
+        if (self.datePickerMode == FlatDatePickerModeDate || self.datePickerMode == FlatDatePickerModeMonthAndYear ) {
+            if ( self.datePickerMode != FlatDatePickerModeMonthAndYear) {
+                [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:animated];
+            }
             [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:animated];
             [self setScrollView:_scollViewYears atIndex:(_selectedYear - kStartYear) animated:animated]; 
         }
@@ -1455,7 +1474,7 @@
     NSDateComponents *dateComponents = nil;
     
     // Date Mode :
-    if (self.datePickerMode == FlatDatePickerModeDate) {
+    if (self.datePickerMode == FlatDatePickerModeDate || self.datePickerMode == FlatDatePickerModeMonthAndYear ) {
         
         dateComponents = [[NSDateComponents alloc] init];
         [dateComponents setTimeZone:self.timeZone];
