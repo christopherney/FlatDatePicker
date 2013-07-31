@@ -48,7 +48,7 @@
 #define kFlatDatePickerIconValid @"FlatDatePicker-Icon-Check.png"
 
 // Constants :
-#define kStartYear 1900
+#define kStartYear ( self.minimumDate == nil ? 1900 : [self yearOfDate:self.minimumDate] )
 #define TAG_DAYS 1
 #define TAG_MONTHS 2
 #define TAG_YEARS 3
@@ -124,6 +124,13 @@
 @end
 
 @implementation FlatDatePicker
+
+#pragma mark - Helpers
+
+- (NSInteger) yearOfDate:(NSDate*)date {
+	NSDateComponents *components = [[NSCalendar currentCalendar] components:(NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit) fromDate:date];
+	return components.year;
+}
 
 #pragma mark - Initializers
 
@@ -952,14 +959,7 @@
     
     NSMutableArray *years = [[NSMutableArray alloc] init];
 
-    int yearMin = 0;
-    
-    if (self.minimumDate != nil) {
-        NSDateComponents* componentsMin = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:self.minimumDate];
-        yearMin= [componentsMin year];
-    } else {
-        yearMin = kStartYear;
-    }
+    int yearMin = kStartYear;
     
     int yearMax = 0;
     NSDateComponents* componentsMax = nil;
@@ -1432,7 +1432,7 @@
                 [self setScrollView:_scollViewDays atIndex:(_selectedDay - 1) animated:animated];
             }
             [self setScrollView:_scollViewMonths atIndex:(_selectedMonth - 1) animated:animated];
-            [self setScrollView:_scollViewYears atIndex:(_selectedYear - kStartYear) animated:animated]; 
+            [self setScrollView:_scollViewYears atIndex:(_selectedYear - kStartYear) animated:animated];
         }
         
         if (self.datePickerMode == FlatDatePickerModeTime) {
