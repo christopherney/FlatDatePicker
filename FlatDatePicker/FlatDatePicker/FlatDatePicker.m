@@ -125,7 +125,8 @@
 
 @implementation FlatDatePicker
 
-#pragma mark - Helpers
+#pragma mark -
+#pragma mark Helpers
 
 - (NSInteger) yearOfDate:(NSDate*)date {
 	NSDateComponents *components = [[NSCalendar currentCalendar] components:(NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit) fromDate:date];
