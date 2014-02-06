@@ -1468,7 +1468,7 @@
         [dateComponents setSecond:0];
     }
     
-    return [dateComponents date];
+    return [self.calendar dateFromComponents:dateComponents];
 }
 
 - (NSDate*)getDate {
