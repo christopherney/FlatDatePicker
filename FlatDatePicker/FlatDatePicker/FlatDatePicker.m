@@ -27,7 +27,7 @@
 
 // Constants sizes :
 #define kFlatDatePickerHeight 260
-#define kFlatDatePickerHeaderHeight 44
+#define kFlatDatePickerHeaderHeight ((UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone) ? 44 : (self.title == nil || self.title.length == 0) ? 0 : 44)
 #define kFlatDatePickerButtonHeaderWidth 44
 #define kFlatDatePickerHeaderBottomMargin 1
 #define kFlatDatePickerScrollViewDaysWidth 90
@@ -56,6 +56,9 @@
 #define TAG_MINUTES 5
 #define TAG_SECONDS 6
 #define TAG_DATES 7
+
+// Macros
+#define IS_PHONE  UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone
 
 @interface FlatDatePicker ()
 
@@ -253,7 +256,9 @@
 - (void)buildHeader {
     
     // Button Cancel
+    NSLog(@"kFlatDatePickerHeaderHeight: %d", kFlatDatePickerHeaderHeight);
     _buttonClose = [[UIButton alloc] initWithFrame:CGRectMake(0.0, 0.0, kFlatDatePickerButtonHeaderWidth, kFlatDatePickerHeaderHeight)];
+    _buttonClose.hidden = !IS_PHONE;
     _buttonClose.backgroundColor = kFlatDatePickerBackgroundColorButtonCancel;
     [_buttonClose setImage:[UIImage imageNamed:kFlatDatePickerIconCancel] forState:UIControlStateNormal];
     [_buttonClose addTarget:self action:@selector(actionButtonCancel) forControlEvents:UIControlEventTouchUpInside];
@@ -261,6 +266,7 @@
 
     // Button Valid
     _buttonValid = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - kFlatDatePickerButtonHeaderWidth, 0.0, kFlatDatePickerButtonHeaderWidth, kFlatDatePickerHeaderHeight)];
+    _buttonValid.hidden = !IS_PHONE;
     _buttonValid.backgroundColor = kFlatDatePickerBackgroundColorButtonValid;
     [_buttonValid setImage:[UIImage imageNamed:kFlatDatePickerIconValid] forState:UIControlStateNormal];
     [_buttonValid addTarget:self action:@selector(actionButtonValid) forControlEvents:UIControlEventTouchUpInside];
@@ -270,6 +276,7 @@
     _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(kFlatDatePickerButtonHeaderWidth, 0.0, self.frame.size.width - (kFlatDatePickerHeaderHeight * 2), kFlatDatePickerHeaderHeight)];
     _labelTitle.backgroundColor = kFlatDatePickerBackgroundColorTitle;
     _labelTitle.text = self.title;
+    _labelTitle.hidden = (self.title == nil || self.title.length == 0);
     _labelTitle.font = kFlatDatePickerFontTitle;
     _labelTitle.textAlignment = NSTextAlignmentCenter;
     _labelTitle.textColor = kFlatDatePickerFontColorTitle;
@@ -886,16 +893,18 @@
             [self highlightLabelInArray:_labelsSeconds atIndex:indexSeconds];
         }
         
-        [UIView beginAnimations:@"FlatDatePickerShow" context:nil];
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDuration:kFlatDatePickerAnimationDuration];
-        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDidStopSelector:@selector(animationShowDidFinish)];
+        if (IS_PHONE) {
+            [UIView beginAnimations:@"FlatDatePickerShow" context:nil];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDuration:kFlatDatePickerAnimationDuration];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(animationShowDidFinish)];
+        }
         
         self.frame = CGRectMake(self.frame.origin.x, _parentView.frame.size.height - kFlatDatePickerHeight, self.frame.size.width, self.frame.size.height);
         
-        [UIView commitAnimations];
+        if (IS_PHONE) [UIView commitAnimations];
     }
 }
 
@@ -1359,7 +1368,11 @@
     CGFloat offsetContentScrollView = (scrollView.frame.size.height - kFlatDatePickerScrollViewItemHeight) / 2.0;
     CGFloat offetY = scrollView.contentOffset.y;
     CGFloat index = floorf((offetY + offsetContentScrollView) / kFlatDatePickerScrollViewItemHeight);
-    index = (index - 1);
+    if (IS_PHONE) {
+        index = (index - 1);
+    } else {
+        index = (index - 2);
+    }
     return index;
 }
 
@@ -1493,6 +1506,7 @@
     if (self.datePickerMode == FlatDatePickerModeTime) {
 
         dateComponents = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
+        [dateComponents setCalendar:self.calendar];
         [dateComponents setTimeZone:self.timeZone];
         [dateComponents setHour:hours];
         [dateComponents setMinute:minutes];
@@ -1508,6 +1522,8 @@
         [dateComponents setMinute:minutes];
         [dateComponents setSecond:0];
     }
+    
+    NSLog(@"date: %@ hours: %d, minutes: %d, seconds: %d dateComponents: %@, date: %@, calendar: %@", date, hours, minutes, seconds, dateComponents, dateComponents.date, self.calendar);
     
     return [dateComponents date];
 }
