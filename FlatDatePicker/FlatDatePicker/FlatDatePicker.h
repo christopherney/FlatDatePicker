@@ -19,6 +19,7 @@
 
 typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     FlatDatePickerModeTime,           // Displays hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. 6 | 53 | PM)
+    FlatDatePickerModeMonthAndYear,   // Displays month and year depending on the locale setting (e.g. 15 | 2007)
     FlatDatePickerModeDate,           // Displays month, day, and year depending on the locale setting (e.g. November | 15 | 2007)
     FlatDatePickerModeDateAndTime    // Displays date, hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. Wed Nov 15 | 6 | 53 | PM)
 };
@@ -118,6 +119,28 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
 
 @property(nonatomic,readonly) BOOL        isOpen;                 // read only property, indicate in datepicker is open.
 
+/**
+ * Colors customization.
+ */
+@property (strong) UIColor *backgroundColor;
+@property (strong) UIColor *backgroundColorTitle;
+@property (strong) UIColor *backgroundColorButtonValid;
+@property (strong) UIColor *backgroundColorButtonCancel;
+@property (strong) UIColor *backgroundColorScrollView;
+@property (strong) UIColor *backgroundColorLines;
+@property (strong) UIColor *backgroundColorSelected;
+
+@property (strong) UIColor *fontColorTitle;
+@property (strong) UIColor *fontColorLabel;
+@property (strong) UIColor *fontColorLabelSelected;
+
+/**
+ * Font customization.
+ */
+@property (strong) UIFont *fontTitle;
+@property (strong) UIFont *fontLabel;
+@property (strong) UIFont *fontLabelSelected;
+
 #pragma mark - Initializers
 
 - (id)initWithParentView:(UIView*)parentView;
@@ -126,6 +149,11 @@ typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
 
 - (void)show;
 - (void)dismiss;
+
+/**
+ * Force to redraw the Picker. You should call this method after change the default colors.
+ */
+- (void)setupControl;
 
 #pragma mark - DatePicker Mode
 
