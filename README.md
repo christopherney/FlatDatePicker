@@ -5,6 +5,8 @@ The FlatDatePicker is a iOS control **Date Picker** with **Flat-UI** appearance.
 
 This control is compatible with **ARC** and **iOS 5+**.
 
+Open Source : Licence GPL.
+
 <!-- MacBuildServer Install Button -->
 <div class="macbuildserver-block">
     <a class="macbuildserver-button" href="http://macbuildserver.com/project/github/build/?xcode_project=FlatDatePicker.xcodeproj&amp;target=FlatDatePicker&amp;repo_url=https%3A%2F%2Fgithub.com%2Fchristopherney%2FFlatDatePicker.git&amp;build_conf=Release" target="_blank"><img src="http://com.macbuildserver.github.s3-website-us-east-1.amazonaws.com/button_up.png"/></a><br/><sup><a href="http://macbuildserver.com/github/opensource/" target="_blank">by MacBuildServer</a></sup>
